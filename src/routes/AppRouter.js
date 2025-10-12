@@ -8,16 +8,49 @@ import { useAuth } from "../context/AuthContext";
 
 function PrivateRoute({ children }) {
   const { user } = useAuth();
-  return user ? children : <Navigate to="/" />;
+  return user ? children : <Navigate to="/" replace />;
+}
+
+function PublicRoute({ children }) {
+  const { user } = useAuth();
+  return user ? <Navigate to="/todos" replace /> : children;
 }
 
 export default function AppRouter() {
   return (
     <Routes>
-      <Route path="/" element={<LoginPage />} />
-      <Route path="/request" element={<RequestPage />} />
-      <Route path="/reset" element={<ResetPage />} />
-      <Route path="/signup" element={<SignupPage />} />
+      <Route
+        path="/"
+        element={
+          <PublicRoute>
+            <LoginPage />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/signup"
+        element={
+          <PublicRoute>
+            <SignupPage />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/request"
+        element={
+          <PublicRoute>
+            <RequestPage />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/reset"
+        element={
+          <PublicRoute>
+            <ResetPage />
+          </PublicRoute>
+        }
+      />
       <Route
         path="/todos"
         element={
@@ -26,6 +59,8 @@ export default function AppRouter() {
           </PrivateRoute>
         }
       />
+      {/* fallback for unknown paths */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

@@ -1,21 +1,32 @@
 import { createContext, useContext, useState } from "react";
+import { login, signup } from "../services/api";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
-  const login = (username, password) => {
-    if (username && password) {
-      setUser({ username });
+  const handleLogin = async (email, password) => {
+    const data = await login(email, password);
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+      setUser(data.user);
     }
-    console.log("Login attempted with:", { username, password });
+    return data;
   };
 
-  const logout = () => setUser(null);
+  const handleSignup = async (userData) => {
+    const data = await signup(userData);
+    return data;
+  };
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    setUser(null);
+  };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, handleLogin, handleSignup, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,8 +1,8 @@
 import React from "react";
-import TodoForm from "../Components/Todo/TodoForm";
-import TodoList from "../Components/Todo/TodoList";
-import TodoFilters from "../Components/Todo/TodoFilters";
-import TodoStats from "../Components/Todo/TodoStats";
+import TodoForm from "../components/Todo/TodoForm";
+import TodoList from "../components/Todo/TodoList";
+import TodoFilters from "../components/Todo/TodoFilters";
+import TodoStats from "../components/Todo/TodoStats";
 
 export default function TodoLayout({
   todos,
