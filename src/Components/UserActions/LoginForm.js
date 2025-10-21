@@ -76,7 +76,7 @@ export default function LoginForm() {
         <Button
           type="button"
           variant="link"
-          onClick={() => navigate("/request")}
+          onClick={() => navigate("/request-reset")}
         >
           Forgot Password
         </Button>

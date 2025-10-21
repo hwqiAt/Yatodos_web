@@ -2,24 +2,26 @@ import React, { useState } from "react";
 import Button from "../UI/Button";
 import InputGroup from "../UI/InputGroup";
 
-export default function ForgotPasswordForm({
+export default function VerifyForm({
   onSubmit,
   isLoading,
   apiError,
   apiMessage,
 }) {
-  const [email, setEmail] = useState("");
+  const [code, setCode] = useState("");
   const [validationError, setValidationError] = useState("");
 
   const handleChange = (e) => {
-    setEmail(e.target.value);
+    const { value } = e.target;
+    if (!/^\d*$/.test(value) || value.length > 6) return;
+
+    setCode(value);
     if (validationError) setValidationError("");
   };
 
   const validate = () => {
-    if (!email) return "Email is required";
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
-      return "Invalid email format";
+    if (!code) return "Verification code is required";
+    if (code.length < 6) return "Code must be 6 digits";
     return "";
   };
 
@@ -33,23 +35,26 @@ export default function ForgotPasswordForm({
     }
 
     if (onSubmit) {
-      onSubmit(email);
+      onSubmit(code);
     }
   };
 
   return (
     <form className="main-form" onSubmit={handleSubmit}>
       <InputGroup
-        label="Email"
-        id="email"
-        type="email"
-        value={email}
+        label="Verification Code"
+        id="code"
+        type="text"
+        value={code}
         onChange={handleChange}
         message={validationError || apiError}
+        placeholder="Enter the 6-digit code"
+        maxLength={6}
+        autoComplete="one-time-code"
       />
 
       <Button type="submit" disabled={isLoading}>
-        {isLoading ? "Sending..." : "Send OTP"}
+        {isLoading ? `${apiMessage}` : "Verify Code"}
       </Button>
     </form>
   );

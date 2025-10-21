@@ -23,7 +23,8 @@ export default function TodoFilters({
         ))}
       </div>
       <button onClick={onClearCompleted} className="clear-btn">
-        🧽 Clear Completed!
+        <span class="icon">🧽</span>
+        <span class="text-to-hide">Clear Completed!</span>
       </button>
     </div>
   );

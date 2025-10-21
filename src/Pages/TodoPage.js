@@ -1,46 +1,90 @@
-// src/pages/TodoPage.js
 import React, { useState, useEffect } from "react";
 import TodoLayout from "../Layouts/TodoLayout";
 import "../assets/styles.css";
+import {
+  fetchTodos,
+  createTodo,
+  toggleTodo,
+  deleteTodo,
+  deleteCompletedTodos,
+} from "../services/todoService";
 
 export default function TodoPage() {
-  const [todos, setTodos] = useState(() => {
-    const saved = localStorage.getItem("todos");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [todos, setTodos] = useState([]);
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
-    localStorage.setItem("todos", JSON.stringify(todos));
-  }, [todos]);
+    (async () => {
+      try {
+        const data = await fetchTodos();
+        setTodos(data.data);
+      } catch (err) {
+        console.error(err);
+      }
+    })();
+  }, []);
 
-  const addTodo = (newTodo) => {
-    setTodos((prev) => [...prev, newTodo]);
+  const addTodo = async (newTodo) => {
+    try {
+      const response = await createTodo(newTodo);
+      if (response.data) {
+        setTodos((prev) => [...prev, response.data]);
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const deleteTodo = (id) => {
-    setTodos((prev) => prev.filter((todo) => todo.id !== id));
+  const handleToggle = async (id) => {
+    try {
+      const todoToToggle = todos.find((todo) => todo._id === id);
+      if (!todoToToggle) return;
+
+      const newCompletedState = !todoToToggle.completed;
+
+      const response = await toggleTodo(id, newCompletedState);
+
+      if (response.data) {
+        setTodos((prev) =>
+          prev.map((todo) => (todo._id === id ? response.data : todo))
+        );
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const toggleTodo = (id) => {
-    setTodos((prev) =>
-      prev.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      )
-    );
+  const handleDelete = async (id) => {
+    try {
+      await deleteTodo(id);
+      setTodos((prev) => prev.filter((todo) => todo._id !== id));
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const clearCompleted = () => {
-    setTodos((prev) => prev.filter((todo) => !todo.completed));
+  const clearCompleted = async () => {
+    try {
+      await deleteCompletedTodos();
+
+      setTodos((prev) => prev.filter((todo) => !todo.completed));
+    } catch (err) {
+      console.error(err);
+    }
   };
+  const filteredTodos = todos.filter((todo) => {
+    if (filter === "active") return !todo.completed;
+    if (filter === "completed") return todo.completed;
+    return true;
+  });
 
   return (
     <TodoLayout
-      todos={todos}
+      todos={filteredTodos}
       filter={filter}
       onAddTodo={addTodo}
-      onToggleTodo={toggleTodo}
-      onDeleteTodo={deleteTodo}
+      onToggleTodo={handleToggle}
+      onDeleteTodo={handleDelete}
       onFilterChange={setFilter}
       onClearCompleted={clearCompleted}
     />

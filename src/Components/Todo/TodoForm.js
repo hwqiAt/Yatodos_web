@@ -2,17 +2,12 @@ import React, { useState } from "react";
 function TodoForm({ onAddTodo }) {
   const [text, setText] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (text.trim()) {
-      onAddTodo({
-        id: Date.now(),
-        text: text.trim(),
-        completed: false,
-        createdAt: new Date().toISOString(),
-      });
-      setText("");
-    }
+    if (!text.trim()) return;
+
+    await onAddTodo(text.trim());
+    setText("");
   };
 
   return (
@@ -21,7 +16,7 @@ function TodoForm({ onAddTodo }) {
         type="text"
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="Money is comming. Lets set needs 🤑"
+        placeholder="Set your todo..."
         className="todo-input"
       />
       <button type="submit" className="add-btn">

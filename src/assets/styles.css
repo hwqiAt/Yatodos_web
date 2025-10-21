@@ -1,7 +1,11 @@
 .todo-app {
-  max-width: 600px;
-  margin: 0 auto;
+  max-width: 900px;
+  margin: auto;
   padding: 20px;
+}
+.todo-app h1 {
+  text-align: center;
+  margin-bottom: 24px;
 }
 .todo-form {
   display: flex;
@@ -103,6 +107,11 @@
   background: #e8f5e8;
   border-radius: 8px;
   margin-top: 16px;
+}
+@media (max-width: 450px) {
+  .clear-btn .text-to-hide {
+    display: none;
+  }
 }
 
 .empty-state {

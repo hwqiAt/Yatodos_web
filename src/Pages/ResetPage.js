@@ -1,18 +1,51 @@
 import LoginLayout from "../Layouts/ActionLayout";
 import ResetForm from "../components/UserActions/ResetForm";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { resetPassword } from "../services/authService";
 import "../assets/actions.css";
 
-export default function LoginPage() {
+export default function ResetPage() {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleLogin = () => {
-    navigate("/");
+  const [isLoading, setIsLoading] = useState(false);
+  const [apiError, setApiError] = useState(null);
+
+  const resetToken = location.state?.resetToken;
+
+  useEffect(() => {
+    if (!resetToken) {
+      navigate("/request-reset");
+    }
+  }, [resetToken, navigate]);
+
+  const handleReset = async (password) => {
+    setIsLoading(true);
+    setApiError(null);
+
+    try {
+      await resetPassword(resetToken, password);
+
+      navigate("/");
+    } catch (err) {
+      setApiError(err.message || "An error occurred.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
+  if (!resetToken) {
+    return null;
+  }
+
   return (
-    <LoginLayout title="Reset Password">
-      <ResetForm onSubmit={handleLogin} />
+    <LoginLayout title="Set New Password">
+      <ResetForm
+        onSubmit={handleReset}
+        isLoading={isLoading}
+        apiError={apiError}
+      />
     </LoginLayout>
   );
 }

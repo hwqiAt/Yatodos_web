@@ -2,21 +2,18 @@ import React, { useState } from "react";
 import Button from "../UI/Button";
 import InputGroup from "../UI/InputGroup";
 
-export default function ResetPasswordForm({ onSubmit }) {
+export default function ResetPasswordForm({ onSubmit, isLoading, apiError }) {
   const [formData, setFormData] = useState({
     password: "",
     confirmPassword: "",
   });
 
-  const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  const [validationErrors, setValidationErrors] = useState({});
 
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
-    setErrors((prev) => ({ ...prev, [id]: "" }));
-    setMessage("");
+    setValidationErrors((prev) => ({ ...prev, [id]: "" }));
   };
 
   const validate = () => {
@@ -34,31 +31,17 @@ export default function ResetPasswordForm({ onSubmit }) {
     return newErrors;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
+      setValidationErrors(validationErrors);
       return;
     }
 
     if (onSubmit) {
-      try {
-        setLoading(true);
-        const res = await onSubmit(formData.password);
-
-        if (res?.success) {
-          setMessage("Password has been successfully reset!");
-          setFormData({ password: "", confirmPassword: "" });
-        } else {
-          setErrors({ general: res?.message || "Failed to reset password." });
-        }
-      } catch (err) {
-        setErrors({ general: "Server error. Please try again later." });
-      } finally {
-        setLoading(false);
-      }
+      onSubmit(formData.password);
     }
   };
 
@@ -70,7 +53,7 @@ export default function ResetPasswordForm({ onSubmit }) {
         type="password"
         value={formData.password}
         onChange={handleChange}
-        message={errors.password}
+        message={validationErrors.password}
       />
 
       <InputGroup
@@ -79,14 +62,13 @@ export default function ResetPasswordForm({ onSubmit }) {
         type="password"
         value={formData.confirmPassword}
         onChange={handleChange}
-        message={errors.confirmPassword}
+        message={validationErrors.confirmPassword}
       />
 
-      {errors.general && <p className="error-message">{errors.general}</p>}
-      {message && <p className="success-message">{message}</p>}
+      {apiError && <p className="error-message">{apiError}</p>}
 
-      <Button type="submit" disabled={loading}>
-        {loading ? "Resetting..." : "Reset Password"}
+      <Button type="submit" disabled={isLoading}>
+        {isLoading ? "Resetting..." : "Reset Password"}
       </Button>
     </form>
   );

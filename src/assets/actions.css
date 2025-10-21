@@ -99,7 +99,7 @@ body {
 .form-group span.error-message {
   position: relative;
   margin-left: auto;
-  color: #ccc;
+  color: hsl(var(--error-hsl));
   font-size: 0.75rem;
 }
 

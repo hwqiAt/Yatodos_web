@@ -12,10 +12,10 @@ function TodoList({ todos, onToggleTodo, onDeleteTodo }) {
     <ul className="todo-list">
       {todos.map((todo) => (
         <TodoItem
-          key={todo.id}
+          key={todo._id}
           todo={todo}
-          onToggle={() => onToggleTodo(todo.id)}
-          onDelete={() => onDeleteTodo(todo.id)}
+          onToggle={() => onToggleTodo(todo._id)}
+          onDelete={() => onDeleteTodo(todo._id)}
         ></TodoItem>
       ))}
     </ul>

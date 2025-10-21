@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "../Pages/LoginPage";
 import SignupPage from "../Pages/SignupPage";
 import RequestPage from "../Pages/RequestPage";
+import VerifyPage from "../Pages/VerifyPage"; // (Đã thêm trang verify còn thiếu)
 import ResetPage from "../Pages/ResetPage";
 import TodoPage from "../Pages/TodoPage";
 import { useAuth } from "../context/AuthContext";
@@ -36,7 +37,7 @@ export default function AppRouter() {
         }
       />
       <Route
-        path="/request"
+        path="/request-reset"
         element={
           <PublicRoute>
             <RequestPage />
@@ -44,7 +45,15 @@ export default function AppRouter() {
         }
       />
       <Route
-        path="/reset"
+        path="/verify-code"
+        element={
+          <PublicRoute>
+            <VerifyPage />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/reset-password"
         element={
           <PublicRoute>
             <ResetPage />
@@ -59,7 +68,6 @@ export default function AppRouter() {
           </PrivateRoute>
         }
       />
-      {/* fallback for unknown paths */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

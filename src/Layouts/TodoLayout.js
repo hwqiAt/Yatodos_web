@@ -26,7 +26,7 @@ export default function TodoLayout({
 
   return (
     <div className="todo-app">
-      <h1>🎆 My Todo App</h1>
+      <h1>hwqiat - Yatodo</h1>
 
       <TodoForm onAddTodo={onAddTodo} />
 

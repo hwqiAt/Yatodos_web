@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import Button from "../UI/Button";
 import InputGroup from "../UI/InputGroup";
-import { useAuth } from "../../context/AuthContext";
 
-export default function SignupForm() {
-  const { handleSignup } = useAuth();
+export default function SignupForm({
+  onSubmit,
+  isLoading,
+  apiError,
+  apiMessage,
+}) {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -12,15 +15,12 @@ export default function SignupForm() {
     confirmPassword: "",
   });
 
-  const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  const [validationErrors, setValidationErrors] = useState({});
 
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
-    setErrors((prev) => ({ ...prev, [id]: "" }));
-    setMessage("");
+    setValidationErrors((prev) => ({ ...prev, [id]: "" }));
   };
 
   const validate = () => {
@@ -46,38 +46,17 @@ export default function SignupForm() {
     return newErrors;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     const validationErrors = validate();
 
     if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
+      setValidationErrors(validationErrors);
       return;
     }
 
-    try {
-      setLoading(true);
-      const res = await handleSignup({
-        username: formData.username,
-        email: formData.email,
-        password: formData.password,
-      });
-
-      if (res?._t === "Ok") {
-        setMessage("Account created successfully! You can now log in.");
-        setFormData({
-          username: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-        });
-      } else {
-        setErrors({ general: res?.message || "Signup failed." });
-      }
-    } catch (err) {
-      setErrors({ general: "Server error. Please try again later." });
-    } finally {
-      setLoading(false);
+    if (onSubmit) {
+      onSubmit(formData);
     }
   };
 
@@ -89,7 +68,7 @@ export default function SignupForm() {
         type="text"
         value={formData.username}
         onChange={handleChange}
-        message={errors.username}
+        message={validationErrors.username}
       />
 
       <InputGroup
@@ -98,7 +77,7 @@ export default function SignupForm() {
         type="email"
         value={formData.email}
         onChange={handleChange}
-        message={errors.email}
+        message={validationErrors.email}
       />
 
       <InputGroup
@@ -107,7 +86,7 @@ export default function SignupForm() {
         type="password"
         value={formData.password}
         onChange={handleChange}
-        message={errors.password}
+        message={validationErrors.password}
       />
 
       <InputGroup
@@ -116,14 +95,28 @@ export default function SignupForm() {
         type="password"
         value={formData.confirmPassword}
         onChange={handleChange}
-        message={errors.confirmPassword}
+        message={validationErrors.confirmPassword}
       />
 
-      {errors.general && <p className="error-message">{errors.general}</p>}
-      {message && <p className="success-message">{message}</p>}
+      {apiError && (
+        <p
+          className="error-message"
+          style={{ color: "red", textAlign: "center" }}
+        >
+          {`${apiError} Try again.`}
+        </p>
+      )}
+      {apiMessage && (
+        <p
+          className="success-message"
+          style={{ color: "white", textAlign: "center" }}
+        >
+          {apiMessage}
+        </p>
+      )}
 
-      <Button type="submit" disabled={loading}>
-        {loading ? "Creating..." : "Sign Up"}
+      <Button type="submit" disabled={isLoading}>
+        {isLoading ? "Creating..." : "Sign Up"}
       </Button>
     </form>
   );
