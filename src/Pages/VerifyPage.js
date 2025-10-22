@@ -1,5 +1,5 @@
 import LoginLayout from "../Layouts/ActionLayout";
-import VerifyForm from "../components/Action/VerifyForm";
+import VerifyForm from "../Components/Action/VerifyForm";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { verifyResetCode } from "../services/authService";

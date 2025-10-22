@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import LoginLayout from "../Layouts/ActionLayout";
-import RequestForm from "../components/Action/RequestForm";
+import RequestForm from "../Components/Action/RequestForm";
 import { useNavigate } from "react-router-dom";
 import { requestPasswordReset } from "../services/authService";
 import "../assets/actions.css";

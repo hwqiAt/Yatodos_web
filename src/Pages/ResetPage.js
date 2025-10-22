@@ -1,5 +1,5 @@
 import LoginLayout from "../Layouts/ActionLayout";
-import ResetForm from "../components/Action/ResetForm";
+import ResetForm from "../Components/Action/ResetForm";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { resetPassword } from "../services/authService";

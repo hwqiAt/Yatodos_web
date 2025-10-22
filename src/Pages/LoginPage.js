@@ -1,5 +1,5 @@
 import LoginLayout from "../Layouts/ActionLayout";
-import LoginForm from "../components/Action/LoginForm";
+import LoginForm from "../Components/Action/LoginForm";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "../assets/actions.css";
